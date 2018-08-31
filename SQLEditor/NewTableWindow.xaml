@@ -1,0 +1,39 @@
+﻿<Window x:Class="SQLEditor.NewTableWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:SQLEditor"
+        Title="NewTableWindow" Height="300" Width="300">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:DataTypes"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="153*" />
+            <RowDefinition Height="108" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
+            <Label Content="Table name:" />
+            <TextBox Name="tbxTableName" Text="{Binding Path=TableName}" Width="150" />
+        </StackPanel>
+        <ListView Name="lvTable" ItemsSource="{Binding Path=Cols, Mode=TwoWay}" Grid.Column="0" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Name="tbxColName" Width="50" Text="{Binding Path=Name}" />
+                        <ComboBox Name="cbxColType" SelectedValue="{Binding Path=DataType}" ItemsSource="{Binding Source={StaticResource ResourceKey=dataFromEnum} }">
+                        </ComboBox>
+                        <Button Name="btnRemoveColumn" Content="X" Click="btnRemoveColumn_Click" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button VerticalAlignment="Top" Content="Add column" Name="btnAddColumn" Grid.Column="0" Grid.Row="2" Click="btnAddColumn_Click" />
+        <Button VerticalAlignment="Top" Content="Create" Name="btnCreate" Grid.Column="0" Grid.Row="2" Margin="0,25,0,0" Click="btnCreate_Click" />
+    </Grid>
+</Window>

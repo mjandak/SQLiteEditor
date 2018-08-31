@@ -1,0 +1,10 @@
+﻿<Application x:Class="SQLEditor.App"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 Startup="Application_Startup" ShutdownMode="OnMainWindowClose" Exit="Application_Exit" DispatcherUnhandledException="Application_DispatcherUnhandledException">
+	<Application.Resources>
+		<Style x:Key="WindowStyle" TargetType="{x:Type Window}">
+			<Setter Property="FontFamily" Value="Verdana" />
+		</Style>
+	</Application.Resources>
+</Application>

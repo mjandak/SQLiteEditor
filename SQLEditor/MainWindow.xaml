@@ -1,0 +1,47 @@
+﻿<Window x:Class="SQLEditor.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:syntaxhighlight="clr-namespace:AurelienRibon.Ui.SyntaxHighlightBox;assembly=AurelienRibon.Ui.SyntaxHighlightBox"
+		Title="MainWindow" Height="600" Width="800" Style="{StaticResource ResourceKey=WindowStyle}">
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <Button Name="btnNewTable" Content="New Table" Click="btnNewTable_Click" />
+        </StackPanel>
+        <DockPanel>
+            <ListBox DockPanel.Dock="Left" ItemsSource="{Binding Path=Tables}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Name="lblTable" Content="{Binding Path=Name}" MouseDoubleClick="lblTable_MouseDoubleClick" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <!--<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+            <TextBox FontFamily="Consolas" FontSize="14" MinHeight="250" MaxHeight="250"  Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
+            <Button Content="Run" Width="30" HorizontalAlignment="Left" Click="Button_Click" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Time: " />
+                <Label Content="{Binding Path=LastSqlDuration}" />
+            </StackPanel>
+            <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      Name="QueryResultGrid" ItemsSource="{Binding Path=QueryResult, Mode=OneWay}" />
+        </StackPanel>-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="350" />
+                    <RowDefinition Height="350" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+                    <!--<TextBox FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />-->
+                    <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
+                    <Button Content="Run" Width="30" HorizontalAlignment="Left" Click="Button_Click" />
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Time: " />
+                        <Label Content="{Binding Path=LastSqlDuration}" />
+                    </StackPanel>
+                </StackPanel>
+                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      Name="QueryResultGrid" ItemsSource="{Binding Path=QueryResult, Mode=OneWay}" Grid.Column="0" Grid.Row="1" />
+            </Grid>
+        </DockPanel>
+    </StackPanel>
+</Window>

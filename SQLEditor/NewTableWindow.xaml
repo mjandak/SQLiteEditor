@@ -34,6 +34,6 @@
             </ListView.ItemTemplate>
         </ListView>
         <Button VerticalAlignment="Top" Content="Add column" Name="btnAddColumn" Grid.Column="0" Grid.Row="2" Click="btnAddColumn_Click" />
-        <Button VerticalAlignment="Top" Content="Create" Name="btnCreate" Grid.Column="0" Grid.Row="2" Margin="0,25,0,0" Click="btnCreate_Click" />
+        <Button VerticalAlignment="Top" Content="Create" Name="btnCreate" Grid.Column="0" Grid.Row="2" Margin="0,25,0,0" Command="{Binding Create}" />
     </Grid>
 </Window>

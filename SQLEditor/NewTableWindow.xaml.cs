@@ -35,10 +35,5 @@ namespace SQLEditor
             var x = (ColumnVM)((FrameworkElement)e.Source).DataContext;
             ((NewTableWindowVM)this.DataContext).Cols.Remove(x);
         }
-
-        private void btnCreate_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

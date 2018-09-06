@@ -205,12 +205,12 @@ namespace SQLEditor
     public class TableVM
 
     {
-        public class GenerateSqlCmd : ICommand
+        public class GenerateSqlCommand : ICommand
         {
             TableVM _parent;
             public event EventHandler CanExecuteChanged;
 
-            public GenerateSqlCmd(TableVM parent)
+            public GenerateSqlCommand(TableVM parent)
             {
                 _parent = parent;
             }
@@ -241,14 +241,14 @@ namespace SQLEditor
                         sql = $"drop table {_parent.Name}";
                         break;
                     default:
-                        break;
+                        throw new ArgumentException();
                 }
                 _parent.MainWindowVM.Sql += $"{Environment.NewLine}{sql}";
             }
 
         }
 
-        public GenerateSqlCmd GenerateSql { get; set; }
+        public GenerateSqlCommand GenerateSqlCmd { get; set; }
 
         public MainWindowVM MainWindowVM { get; set; }
 
@@ -260,21 +260,8 @@ namespace SQLEditor
         {
             MainWindowVM = mainWinVM;
             Name = tblName;
-            GenerateSql = new GenerateSqlCmd(this);
+            GenerateSqlCmd = new GenerateSqlCommand(this);
             Columns = new List<ColumnVM>();
-            //var columns = new List<ColumnVM>();
-            //using (Globals.DbConnection)
-            //{
-            //    var cmd2 = new SQLiteCommand($"pragma table_info({Name});", Globals.DbConnection);
-            //    var r = cmd2.ExecuteReader();
-            //    while (r.Read())
-            //    {
-            //        DataTypes type = DataTypes.text;
-            //        Enum.TryParse<DataTypes>(r["type"].ToString(), out type);
-            //        columns.Add(new ColumnVM(r["name"].ToString(), type));
-            //    }
-            //}
-            //Columns = columns;
         }
 
         public void ShowContents()
@@ -301,7 +288,7 @@ namespace SQLEditor
         public DbConnVM(MainWindowVM mainWinVM)
         {
             MainWindowVM = mainWinVM;
-            LoadDbCmd = new LoadDbCmd(this);
+            LoadDbCmd = new LoadDbCommand(this);
         }
         public void LoadDatabase()
         {
@@ -309,13 +296,13 @@ namespace SQLEditor
         }
     }
 
-    public class LoadDbCmd : ICommand
+    public class LoadDbCommand : ICommand
     {
         DbConnVM _owner;
 
         public event EventHandler CanExecuteChanged;
 
-        public LoadDbCmd(DbConnVM owner)
+        public LoadDbCommand(DbConnVM owner)
         {
             _owner = owner;
         }

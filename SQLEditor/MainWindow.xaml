@@ -49,11 +49,11 @@
                         <StackPanel Orientation="Horizontal">
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="select" Command="{Binding GenerateSql}" CommandParameter="select" />
-                                    <MenuItem Header="update" Command="{Binding GenerateSql}" CommandParameter="update" />
-                                    <MenuItem Header="insert" Command="{Binding GenerateSql}" CommandParameter="insert" />
-                                    <MenuItem Header="delete" Command="{Binding GenerateSql}" CommandParameter="delete" />
-                                    <MenuItem Header="drop"   Command="{Binding GenerateSql}" CommandParameter="drop" />
+                                    <MenuItem Header="select" Command="{Binding GenerateSqlCmd}" CommandParameter="select" />
+                                    <MenuItem Header="update" Command="{Binding GenerateSqlCmd}" CommandParameter="update" />
+                                    <MenuItem Header="insert" Command="{Binding GenerateSqlCmd}" CommandParameter="insert" />
+                                    <MenuItem Header="delete" Command="{Binding GenerateSqlCmd}" CommandParameter="delete" />
+                                    <MenuItem Header="drop"   Command="{Binding GenerateSqlCmd}" CommandParameter="drop" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <Image Source="if_table_1608863.png" Margin="0,0,10,0" />

@@ -78,7 +78,6 @@
     <Compile Include="PSWDWindow.xaml.cs">
       <DependentUpon>PSWDWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RelayCommand.cs" />
     <Compile Include="SQLiteExt.cs" />
   </ItemGroup>
   <ItemGroup>

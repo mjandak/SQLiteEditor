@@ -37,11 +37,9 @@ namespace SQLEditor
 
             public void Execute(object parameter)
             {
-                using (var conn = Globals.DbConnection)
-                {
-                    conn.OpenEx();
-                    new SQLiteCommand(Parent.GenerateSQL(), conn).ExecuteNonQuery();
-                }
+                var conn = Globals.DbConnection;
+                conn.OpenEx();
+                new SQLiteCommand(Parent.GenerateSQL(), conn).ExecuteNonQuery();
             }
         }
 
@@ -68,7 +66,7 @@ namespace SQLEditor
         public ICommand Create { get; set; }
         public NewTableWindowVM()
         {
-            Command = new RelayCommand(CommandDispatch);
+            Command = new RelayCommand<object>(CommandDispatch);
             Create = new CreateCmd(this);
             DataTypes = new string[] { "text", "int", "real", "blob" };
             Cols = new ObservableCollection<ColumnVM>

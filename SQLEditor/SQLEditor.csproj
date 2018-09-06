@@ -67,6 +67,10 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AurelienRibon.Ui.SyntaxHighlightBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\external\AurelienRibon.Ui.SyntaxHighlightBox.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -165,10 +169,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\syntaxhighlightbox\AurelienRibon.Ui.SyntaxHighlightBox\AurelienRibon.Ui.SyntaxHighlightBox.csproj">
-      <Project>{10a9ecd3-ae1e-494d-9a27-8a32dd581759}</Project>
-      <Name>AurelienRibon.Ui.SyntaxHighlightBox</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{E3662D14-9619-4D71-811E-819BA2D22894}</Project>
       <Name>Common</Name>

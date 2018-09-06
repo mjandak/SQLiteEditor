@@ -35,8 +35,8 @@ namespace SQLEditor
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             //user closed the app or ShutDown has been called
-            Globals.DbConnection.Dispose();
-            if (Globals.Pswd != null) Globals.Pswd.Dispose();
+            Globals.DbConnection?.Dispose();
+            Globals.Pswd?.Dispose();
         }
 
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

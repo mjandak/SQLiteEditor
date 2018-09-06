@@ -24,13 +24,13 @@ namespace SQLEditor
             DataContext = new NewTableWindowVM();
         }
 
-        private void btnAddColumn_Click(object sender, RoutedEventArgs e)
+        void btnAddColumn_Click(object sender, RoutedEventArgs e)
         {
             var x = (NewTableWindowVM)((FrameworkElement)e.Source).DataContext;
             x.Cols.Add(new ColumnVM("", DataTypes.text));
         }
 
-        private void btnRemoveColumn_Click(object sender, RoutedEventArgs e)
+        void btnRemoveColumn_Click(object sender, RoutedEventArgs e)
         {
             var x = (ColumnVM)((FrameworkElement)e.Source).DataContext;
             ((NewTableWindowVM)this.DataContext).Cols.Remove(x);

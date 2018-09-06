@@ -11,17 +11,24 @@ namespace Common
     public class Globals
     {
         public static SecureString Pswd;
-        private static readonly SQLiteConnection _dbConnection;
-        static Globals()
-        {
-            string connectionString = ConfigurationManager.ConnectionStrings["sqlite"].ConnectionString;
-            _dbConnection = new SQLiteConnection(connectionString);
-        }
+        static SQLiteConnection _dbConnection;
+
+        //static Globals()
+        //{
+        //    string connectionString = ConfigurationManager.ConnectionStrings["sqlite"].ConnectionString;
+        //    _dbConnection = new SQLiteConnection(connectionString);
+        //}
+
         public static SQLiteConnection DbConnection
         {
             get
             {
                 return _dbConnection;
+            }
+
+            set
+            {
+                _dbConnection = value;
             }
         }
     }

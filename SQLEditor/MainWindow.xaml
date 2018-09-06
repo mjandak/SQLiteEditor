@@ -2,19 +2,151 @@
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:syntaxhighlight="clr-namespace:AurelienRibon.Ui.SyntaxHighlightBox;assembly=AurelienRibon.Ui.SyntaxHighlightBox"
-		Title="MainWindow" Height="600" Width="800" Style="{StaticResource ResourceKey=WindowStyle}">
+        xmlns:local="clr-namespace:SQLEditor"
+		Title="SQLite editor" WindowState="Maximized" Style="{StaticResource ResourceKey=WindowStyle}">
+    <Window.Resources>
+        <CollectionViewSource x:Key="ConnStrings" Source="{Binding ConnStrings}"/>
+    </Window.Resources>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-            <Button Name="btnNewTable" Content="New Table" Click="btnNewTable_Click" />
+            <!--<Button Name="btnOpebDb" Content="Database" Click="btnOpebDb_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <ContextMenu.Resources>
+                            <DataTemplate DataType="{x:Type local:DbConnVM}">
+                                <MenuItem Header="{Binding ConnString}" Command="{Binding LoadDbCmd}" />
+                            </DataTemplate>
+                        </ContextMenu.Resources>
+                        <ContextMenu.ItemsSource>
+                            <CompositeCollection>
+                                <MenuItem Name="menuOpenDb" Header="Open" Click="menuOpenDb_Click" Command="" />
+                                <MenuItem Name="menuCreateDb" Header="Create" Click="menuCreateDb_Click" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource ConnStrings}}"></CollectionContainer>
+                            </CompositeCollection>
+                        </ContextMenu.ItemsSource>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button Name="btnNewTable" Content="New Table" Click="btnNewTable_Click" />-->
+            <Menu x:Name="mainMenu" Height="27">
+                <MenuItem Header="Database" Height="27" Width="66">
+                    <MenuItem.Resources>
+                        <DataTemplate DataType="{x:Type local:DbConnVM}">
+                            <Border>
+                                <Border.InputBindings>
+                                    <!--<MouseBinding MouseAction="LeftClick" 
+                                                  Command="{Binding DataContext.LoadDbCmd, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" />-->
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding LoadDbCmd}" />
+                                </Border.InputBindings>
+                                <TextBlock Text="{Binding ConnString}" />
+                            </Border>
+                        </DataTemplate>
+                    </MenuItem.Resources>
+                    <MenuItem.ItemsSource>
+                        <CompositeCollection>
+                            <MenuItem Name="mainMenuOpenDb" Header="Open" Click="menuOpenDb_Click" Command="" />
+                            <MenuItem Name="mainMenuCreateDb" Header="Create" Click="menuCreateDb_Click" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource ConnStrings}}"></CollectionContainer>
+                        </CompositeCollection>
+                    </MenuItem.ItemsSource>
+                </MenuItem>
+            </Menu>
         </StackPanel>
-        <DockPanel>
-            <ListBox DockPanel.Dock="Left" ItemsSource="{Binding Path=Tables}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!--<ListBox Grid.Column="0" ItemsSource="{Binding Path=Tables}" SelectedItem="">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Label Name="lblTable" Content="{Binding Path=Name}" MouseDoubleClick="lblTable_MouseDoubleClick" />
+                        <Label Name="lblTable" Content="{Binding Path=Name}" MouseDoubleClick="lblTable_MouseDoubleClick">
+                            <Label.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="select" Command="{Binding GenerateSql}" CommandParameter="select" />
+                                    <MenuItem Header="update" Command="{Binding GenerateSql}" CommandParameter="update" />
+                                    <MenuItem Header="insert" Command="{Binding GenerateSql}" CommandParameter="insert" />
+                                    <MenuItem Header="delete" Command="{Binding GenerateSql}" CommandParameter="delete" />
+                                    <MenuItem Header="drop"   Command="{Binding GenerateSql}" CommandParameter="drop" />
+                                </ContextMenu>
+                            </Label.ContextMenu>
+                        </Label>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-            </ListBox>
+            </ListBox>-->
+            <TreeView Name="trvDatabase">
+                <TreeView.Resources>
+                    <!--<HierarchicalDataTemplate DataType="{x:Type local:DbVM}" ItemsSource="{Binding Tables}">
+                        <TextBlock Text="DB" />
+                    </HierarchicalDataTemplate>-->
+                    <HierarchicalDataTemplate DataType="{x:Type local:TableVM}" ItemsSource="{Binding Columns}">
+                        <!--<TreeViewItem Header="{Binding Path=Name}" />-->
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="select" Command="{Binding GenerateSql}" CommandParameter="select" />
+                                    <MenuItem Header="update" Command="{Binding GenerateSql}" CommandParameter="update" />
+                                    <MenuItem Header="insert" Command="{Binding GenerateSql}" CommandParameter="insert" />
+                                    <MenuItem Header="delete" Command="{Binding GenerateSql}" CommandParameter="delete" />
+                                    <MenuItem Header="drop"   Command="{Binding GenerateSql}" CommandParameter="drop" />
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+                            <Image Source="if_table_1608863.png" Margin="0,0,10,0" />
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Bottom" />
+                        </StackPanel>
+                        <!--<TextBlock Text="{Binding Name}" />-->
+                        <!--<Label Content="{Binding Name}" />-->
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type local:ColumnVM}">
+                        <TextBlock Text="{Binding Path=Name}">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu></ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
+                    </DataTemplate>
+                </TreeView.Resources>
+                <TreeViewItem Header="{Binding Path=DbVM.Name}" 
+                              Visibility="{Binding DbVM, Converter={StaticResource NullVisibilityConverter}}"
+                              ItemsSource="{Binding Path=DbVM.Tables}" IsExpanded="True">
+                    <TreeViewItem.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Refresh" Command="{Binding RefreshCmd}" CommandParameter="{Binding Path=DbVM.Name}" />
+                            <MenuItem Header="Add table" Click="btnNewTable_Click" />
+                        </ContextMenu>
+                    </TreeViewItem.ContextMenu>
+                    <TreeViewItem.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="if_database_1608662.png" Margin="0,0,10,0" />
+                                <TextBlock Text="{Binding}" FontWeight="Bold" VerticalAlignment="Bottom" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </TreeViewItem.HeaderTemplate>
+                </TreeViewItem>
+            </TreeView>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="350" />
+                    <RowDefinition Height="350" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+                    <!--<TextBox FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />-->
+                    <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
+                    <Button Content="Run" Width="30" HorizontalAlignment="Left" Command="{Binding ExecuteCmd}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Time: " />
+                        <Label Content="{Binding Path=LastSqlDuration}" />
+                    </StackPanel>
+                </StackPanel>
+                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" 
+                          ScrollViewer.VerticalScrollBarVisibility="Visible" Name="QueryResultGrid" 
+                          ItemsSource="{Binding Path=QueryResult, Mode=OneWay}" Grid.Column="0" Grid.Row="1" />
+            </Grid>
+        </Grid>
+        <DockPanel>
+
             <!--<StackPanel Orientation="Vertical" DockPanel.Dock="Top">
             <TextBox FontFamily="Consolas" FontSize="14" MinHeight="250" MaxHeight="250"  Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
             <Button Content="Run" Width="30" HorizontalAlignment="Left" Click="Button_Click" />
@@ -25,23 +157,7 @@
             <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"
                       Name="QueryResultGrid" ItemsSource="{Binding Path=QueryResult, Mode=OneWay}" />
         </StackPanel>-->
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="350" />
-                    <RowDefinition Height="350" />
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
-                    <!--<TextBox FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />-->
-                    <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
-                    <Button Content="Run" Width="30" HorizontalAlignment="Left" Click="Button_Click" />
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Time: " />
-                        <Label Content="{Binding Path=LastSqlDuration}" />
-                    </StackPanel>
-                </StackPanel>
-                <DataGrid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                      Name="QueryResultGrid" ItemsSource="{Binding Path=QueryResult, Mode=OneWay}" Grid.Column="0" Grid.Row="1" />
-            </Grid>
+
         </DockPanel>
     </StackPanel>
 </Window>

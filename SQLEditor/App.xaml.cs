@@ -28,7 +28,6 @@ namespace SQLEditor
                 }
             }
 
-            MainWindow.DataContext = new MainWindowVM();
             MainWindow.Show();
         }
 

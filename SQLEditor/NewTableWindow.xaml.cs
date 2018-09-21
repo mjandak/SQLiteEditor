@@ -18,22 +18,29 @@ namespace SQLEditor
     /// </summary>
     public partial class NewTableWindow : Window
     {
-        public NewTableWindow()
+        readonly NewTableWindowVM ViewModel;
+
+        public NewTableWindow(string tableName = null)
         {
             InitializeComponent();
-            DataContext = new NewTableWindowVM();
+            DataContext = ViewModel = new NewTableWindowVM(tableName);
+            ViewModel.Execute.Finished += Execute_Finished;
+        }
+
+        void Execute_Finished()
+        {
+            Close();
         }
 
         void btnAddColumn_Click(object sender, RoutedEventArgs e)
         {
-            var x = (NewTableWindowVM)((FrameworkElement)e.Source).DataContext;
-            x.Cols.Add(new ColumnVM("", DataTypes.text));
+            ViewModel.Cols.Add(new ColumnVM("", DataTypes.text));
         }
 
         void btnRemoveColumn_Click(object sender, RoutedEventArgs e)
         {
             var x = (ColumnVM)((FrameworkElement)e.Source).DataContext;
-            ((NewTableWindowVM)this.DataContext).Cols.Remove(x);
+            ViewModel.Cols.Remove(x);
         }
     }
 }

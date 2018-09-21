@@ -27,22 +27,25 @@ namespace SQLEditor
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public MainWindow()
+        public readonly MainWindowVM ViewModel;
+
+        public MainWindow()
 		{
 			InitializeComponent();
+            DataContext = ViewModel = new MainWindowVM();
+            ViewModel.AddAlterTable += ViewModel_AddAlterTable;
             sqlEditor.CurrentHighlighter = HighlighterManager.Instance.Highlighters["SQL"];
         }
 
-        private void lblTable_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        void ViewModel_AddAlterTable(string tableName)
+        {
+            new NewTableWindow(tableName).ShowDialog();
+        }
+
+        void lblTable_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ((TableVM)((FrameworkElement)sender).DataContext).ShowContents();
 
-        }
-
-        private void btnNewTable_Click(object sender, RoutedEventArgs e)
-        {
-            var x = new NewTableWindow();
-            x.ShowDialog();
         }
 
         void btnOpebDb_Click(object sender, RoutedEventArgs e)
@@ -64,7 +67,7 @@ namespace SQLEditor
             }
         }
 
-        private void menuCreateDb_Click(object sender, RoutedEventArgs e)
+        void menuCreateDb_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog();
             if (dialog.ShowDialog() == true)

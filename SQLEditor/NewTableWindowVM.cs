@@ -10,21 +10,23 @@ using System.Data.SQLite;
 
 namespace SQLEditor
 {
-    public class NewTableWindowVM : INotifyPropertyChanged
+    public class NewTableWindowVM : ViewModelBase
     {
-        class CreateCmd : ICommand
+        public class ExecuteCommand : ICommand
         {
             NewTableWindowVM Parent;
 
             public event EventHandler CanExecuteChanged;
 
-            public CreateCmd(NewTableWindowVM parent)
+            public event Action Finished;
+
+            public ExecuteCommand(NewTableWindowVM parent)
             {
                 Parent = parent;
                 Parent.PropertyChanged += Parent_PropertyChanged;
             }
 
-            private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+            void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -40,14 +42,18 @@ namespace SQLEditor
                 var conn = Globals.DbConnection;
                 conn.OpenEx();
                 new SQLiteCommand(Parent.GenerateSQL(), conn).ExecuteNonQuery();
+                Parent.TableId = Parent.TableName;
+                Finished?.Invoke();
             }
         }
 
-        public ObservableCollection<ColumnVM> Cols { get; set; }
+        public GenerateMode Mode { get; set; }
+
+        public ObservableCollection<ColumnVM> Cols { get; set; } = new ObservableCollection<ColumnVM>();
+
         public string[] DataTypes { get; set; }
 
         string tableName;
-
         public string TableName
         {
             get
@@ -62,24 +68,34 @@ namespace SQLEditor
             }
         }
 
+        string TableId { get; set; }
+
         public ICommand Command { get; set; }
-        public ICommand Create { get; set; }
-        public NewTableWindowVM()
+        public ExecuteCommand Execute { get; set; }
+
+        public NewTableWindowVM(string tableName)
         {
+            TableId = TableName = tableName;
+            Mode = string.IsNullOrEmpty(tableName) ? GenerateMode.Create : GenerateMode.Alter;
             Command = new RelayCommand<object>(CommandDispatch);
-            Create = new CreateCmd(this);
+            Execute = new ExecuteCommand(this);
             DataTypes = new string[] { "text", "int", "real", "blob" };
-            Cols = new ObservableCollection<ColumnVM>
+
+            if (Mode == GenerateMode.Alter)
             {
-                new ColumnVM("", SQLEditor.DataTypes.text)
-            };
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        void Notify(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                var cmd = new SQLiteCommand($"pragma table_info({TableName});", Globals.DbConnection);
+                var rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    DataTypes type = SQLEditor.DataTypes.text;
+                    Enum.TryParse(rdr["type"].ToString(), out type);
+                    Cols.Add(new ColumnVM(rdr["name"].ToString(), type, rdr["cid"].ToString()));
+                }
+            }
+            else
+            {
+                Cols.Add(new ColumnVM("", SQLEditor.DataTypes.text));
+            }
         }
 
         void CommandDispatch(object commandParam)
@@ -90,19 +106,55 @@ namespace SQLEditor
         public string GenerateSQL()
         {
             if (string.IsNullOrWhiteSpace(TableName)) throw new Exception("Table name cannot be empty.");
-            var cols = new string[Cols.Count];
-            for (int i = 0; i < Cols.Count; i++)
+            if (Mode == GenerateMode.Alter)
             {
-                cols[i] = Cols[i].GetSQLPartial();
+                List<ColumnVM> addedCols = Cols.Where(c => c.CID == null).ToList();
+
+                var cmd = new SQLiteCommand($"pragma table_info({TableName});", Globals.DbConnection);
+                var rdr = cmd.ExecuteReader();
+
+                var sql = new StringBuilder();
+                if (TableId != TableName)
+                {
+                    sql.AppendLine($"ALTER TABLE {TableId} RENAME TO {TableName};");
+                }
+
+                //column renaming supported since SLQite 3.25.0
+                //while (rdr.Read())
+                //{
+                //    var col = Cols.FirstOrDefault(c => c.CID == rdr["cid"].ToString() && c.Name != rdr["name"].ToString());
+                //    if (col != null)
+                //    {
+                //        sql.AppendLine($"ALTER TABLE {TableName} RENAME COLUMN {rdr["name"].ToString()} TO {col.Name};");
+                //    }
+                //}
+
+                foreach (var addedCol in addedCols)
+                {
+                    sql.AppendLine($"ALTER TABLE {TableName} ADD COLUMN {addedCol.Name} {addedCol.DataType};");
+                }
+
+                return sql.ToString();
             }
-            return $"CREATE TABLE {TableName} ({string.Join(", ", cols)});";
+            if (Mode == GenerateMode.Create)
+            {
+                var cols = new string[Cols.Count];
+                for (int i = 0; i < Cols.Count; i++)
+                {
+                    cols[i] = Cols[i].GetSQLPartial();
+                }
+                return $"CREATE TABLE {TableName} ({string.Join(", ", cols)});";
+            }
+            throw new InvalidEnumArgumentException();
         }
     }
 
     public class ColumnVM
     {
-        private string _name;
+        private readonly string _cID;
+        public string CID => _cID;
 
+        private string _name;
         public string Name
         {
             get { return _name; }
@@ -110,17 +162,17 @@ namespace SQLEditor
         }
 
         private DataTypes _dataType;
-
         public DataTypes DataType
         {
             get { return _dataType; }
             set { _dataType = value; }
         }
 
-        public ColumnVM(string name, DataTypes dataType)
+        public ColumnVM(string name, DataTypes dataType, string cid = null)
         {
             _name = name;
             _dataType = dataType;
+            _cID = cid;
         }
 
         public string GetSQLPartial()
@@ -133,5 +185,10 @@ namespace SQLEditor
     public enum DataTypes
     {
         text, @int, real, blob
+    }
+
+    public enum GenerateMode
+    {
+        Create, Alter
     }
 }

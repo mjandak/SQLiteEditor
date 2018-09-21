@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SQLEditor"
-        Title="NewTableWindow" Height="300" Width="300">
+        Title="Add/Edit table" Height="300" Width="300">
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -34,6 +34,6 @@
             </ListView.ItemTemplate>
         </ListView>
         <Button VerticalAlignment="Top" Content="Add column" Name="btnAddColumn" Grid.Column="0" Grid.Row="2" Click="btnAddColumn_Click" />
-        <Button VerticalAlignment="Top" Content="Create" Name="btnCreate" Grid.Column="0" Grid.Row="2" Margin="0,25,0,0" Command="{Binding Create}" />
+        <Button VerticalAlignment="Top" Content="Execute" Name="btnExecute" Grid.Column="0" Grid.Row="2" Margin="0,25,0,0" Command="{Binding Execute}" />
     </Grid>
 </Window>

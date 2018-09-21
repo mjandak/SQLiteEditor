@@ -18,33 +18,33 @@ namespace SQLEditor
     {
         public class ExecuteCommand : ICommand
         {
-            private MainWindowVM _parent;
+            MainWindowVM _parent;
 
             public event EventHandler CanExecuteChanged;
 
             public ExecuteCommand(MainWindowVM parent)
             {
                 _parent = parent;
-                _parent.PropertyChanged += _parent_PropertyChanged;
+                //_parent.PropertyChanged += _parent_PropertyChanged;
             }
 
-            private void _parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
+            //void _parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+            //{
+            //    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            //}
 
             public bool CanExecute(object parameter)
             {
-                return _parent.DbVM != null && !string.IsNullOrWhiteSpace(_parent.Sql);
+                //return _parent.DbVM != null && !string.IsNullOrWhiteSpace(_parent.Sql);
+                return true;
             }
 
             public void Execute(object parameter)
             {
+                if (string.IsNullOrWhiteSpace(_parent.Sql)) return;
                 _parent.Run();
             }
         }
-
-        public ExecuteCommand ExecuteCmd { get; set; }
 
         string _sql;
         public string Sql
@@ -100,12 +100,19 @@ namespace SQLEditor
             set => _selectedTable = value;
         }
 
+        #region Commands
         public ICommand RefreshCmd { get; set; }
+        public ICommand ExecuteCmd { get; set; }
+        public ICommand AddTableCmd { get; set; }
+        public ICommand AlterTableCmd { get; set; }
+        #endregion
 
         public MainWindowVM()
         {
             ExecuteCmd = new ExecuteCommand(this);
             RefreshCmd = new RelayCommand<string>(LoadDatabase);
+            AddTableCmd = new RelayCommand<string>(tableName => AddAlterTable(tableName));
+            AlterTableCmd = new RelayCommand<string>(tableName => AddAlterTable(tableName));
 
             foreach (ConnectionStringSettings item in ConfigurationManager.ConnectionStrings)
             {
@@ -189,6 +196,8 @@ namespace SQLEditor
 
             ConnStrings.Add(new DbConnVM(this) { Name = css.Name, ConnString = css.ConnectionString });
         }
+
+        public event Action<string> AddAlterTable;
     }
 
     public class DbVM
@@ -248,7 +257,9 @@ namespace SQLEditor
 
         }
 
-        public GenerateSqlCommand GenerateSqlCmd { get; set; }
+        #region Commands
+        public ICommand GenerateSqlCmd { get; set; }
+        #endregion
 
         public MainWindowVM MainWindowVM { get; set; }
 

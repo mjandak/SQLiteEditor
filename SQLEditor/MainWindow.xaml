@@ -54,6 +54,8 @@
                                     <MenuItem Header="insert" Command="{Binding GenerateSqlCmd}" CommandParameter="insert" />
                                     <MenuItem Header="delete" Command="{Binding GenerateSqlCmd}" CommandParameter="delete" />
                                     <MenuItem Header="drop"   Command="{Binding GenerateSqlCmd}" CommandParameter="drop" />
+                                    <Separator />
+                                    <MenuItem Header="alter"  Command="{Binding Path=MainWindowVM.AlterTableCmd}" CommandParameter="{Binding Name}" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <Image Source="if_table_1608863.png" Margin="0,0,10,0" />
@@ -77,7 +79,7 @@
                     <TreeViewItem.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Refresh" Command="{Binding RefreshCmd}" CommandParameter="{Binding Path=DbVM.Name}" />
-                            <MenuItem Header="Add table" Click="btnNewTable_Click" />
+                            <MenuItem Header="Add table" Command="{Binding AddTableCmd}" />
                         </ContextMenu>
                     </TreeViewItem.ContextMenu>
                     <TreeViewItem.HeaderTemplate>
@@ -98,8 +100,10 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
                     <!--<TextBox FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />-->
-                    <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
-                    <Button Content="Run" Width="30" HorizontalAlignment="Left" Command="{Binding ExecuteCmd}" />
+                    <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" 
+                                                        Text="{Binding Path=Sql}" AcceptsReturn="True" 
+                                                        VerticalScrollBarVisibility="Visible" />
+                    <Button Content="Execute" Width="77" HorizontalAlignment="Left" Command="{Binding ExecuteCmd}" />
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Time: " />
                         <Label Content="{Binding Path=LastSqlDuration}" />

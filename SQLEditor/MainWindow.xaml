@@ -65,12 +65,14 @@
                         <!--<Label Content="{Binding Name}" />-->
                     </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type local:ColumnVM}">
-                        <TextBlock IsHitTestVisible="False">
+                        <TextBlock>
                             <TextBlock.ContextMenu>
                                 <ContextMenu Visibility="Collapsed"></ContextMenu>
                             </TextBlock.ContextMenu>
+                            <TextBlock IsHitTestVisible="False">
                             <Image Source="icons8-key-12.png" Visibility="{Binding Path=PrimaryKey, Converter={StaticResource BoolVisibilityConverter}}" />
                             <Run Text="{Binding Path=Name}"></Run> (<Run Text="{Binding Path=DataType}"></Run>)
+                            </TextBlock>
                         </TextBlock>
                     </DataTemplate>
                 </TreeView.Resources>

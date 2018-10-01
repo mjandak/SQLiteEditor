@@ -173,7 +173,7 @@ namespace SQLEditor
                 {
                     DataTypes type = DataTypes.text;
                     Enum.TryParse(r2["type"].ToString(), out type);
-                    table.Columns.Add(new ColumnVM(r2["name"].ToString(), type));
+                    table.Columns.Add(new ColumnVM(r2["name"].ToString(), type, Convert.ToBoolean(r2["pk"])));
                 }
             }
             DbVM = dbVM;

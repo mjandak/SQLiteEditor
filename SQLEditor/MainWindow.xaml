@@ -39,7 +39,7 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TreeView Name="trvDatabase">
+            <TreeView Name="trvDatabase" PreviewMouseRightButtonDown="trvDatabase_PreviewMouseRightButtonDown">
                 <TreeView.Resources>
                     <!--<HierarchicalDataTemplate DataType="{x:Type local:DbVM}" ItemsSource="{Binding Tables}">
                         <TextBlock Text="DB" />
@@ -65,10 +65,11 @@
                         <!--<Label Content="{Binding Name}" />-->
                     </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type local:ColumnVM}">
-                        <TextBlock>
+                        <TextBlock IsHitTestVisible="False">
                             <TextBlock.ContextMenu>
-                                <ContextMenu></ContextMenu>
+                                <ContextMenu Visibility="Collapsed"></ContextMenu>
                             </TextBlock.ContextMenu>
+                            <Image Source="icons8-key-12.png" Visibility="{Binding Path=PrimaryKey, Converter={StaticResource BoolVisibilityConverter}}" />
                             <Run Text="{Binding Path=Name}"></Run> (<Run Text="{Binding Path=DataType}"></Run>)
                         </TextBlock>
                     </DataTemplate>

@@ -25,6 +25,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
+                        <CheckBox ToolTip="Primary Key" IsChecked="{Binding PrimaryKey}" />
                         <TextBox Name="tbxColName" Width="50" Text="{Binding Path=Name}" />
                         <ComboBox Name="cbxColType" SelectedValue="{Binding Path=DataType}" ItemsSource="{Binding Source={StaticResource ResourceKey=dataFromEnum} }">
                         </ComboBox>

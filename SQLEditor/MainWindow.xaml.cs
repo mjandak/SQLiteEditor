@@ -22,16 +22,16 @@ using System.Data.SQLite;
 
 namespace SQLEditor
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
-	{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
         public readonly MainWindowVM ViewModel;
 
         public MainWindow()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
             DataContext = ViewModel = new MainWindowVM();
             ViewModel.AddAlterTable += ViewModel_AddAlterTable;
             sqlEditor.CurrentHighlighter = HighlighterManager.Instance.Highlighters["SQL"];
@@ -75,6 +75,32 @@ namespace SQLEditor
                 File.Create(dialog.FileName).Dispose();
                 ((MainWindowVM)DataContext).AddDatabase(System.IO.Path.GetFileName(dialog.FileName), dialog.FileName);
                 ((MainWindowVM)DataContext).LoadDatabase(System.IO.Path.GetFileName(dialog.FileName));
+            }
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
+        }
+
+        void trvDatabase_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //TreeViewItem treeViewItem = e.Source as TreeViewItem;
+            //if (treeViewItem == null)
+            //{
+            //    treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            //}
+            //treeViewItem.Focus();
+            //e.Handled = true;
+
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            if (treeViewItem != null)
+            {
+                treeViewItem.Focus();
+                e.Handled = true;
             }
         }
     }

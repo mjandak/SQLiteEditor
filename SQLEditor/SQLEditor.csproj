@@ -192,6 +192,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="icons8-key-12.png" />
     <Resource Include="if_database_1608662.png" />
     <Resource Include="if_table_1608863.png" />
   </ItemGroup>

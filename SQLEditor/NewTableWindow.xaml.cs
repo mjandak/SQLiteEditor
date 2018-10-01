@@ -34,7 +34,7 @@ namespace SQLEditor
 
         void btnAddColumn_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.Cols.Add(new ColumnVM("", DataTypes.text));
+            ViewModel.Cols.Add(new ColumnVM("", DataTypes.text, false));
         }
 
         void btnRemoveColumn_Click(object sender, RoutedEventArgs e)

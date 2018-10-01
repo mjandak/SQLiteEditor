@@ -89,12 +89,12 @@ namespace SQLEditor
                 {
                     DataTypes type = SQLEditor.DataTypes.text;
                     Enum.TryParse(rdr["type"].ToString(), out type);
-                    Cols.Add(new ColumnVM(rdr["name"].ToString(), type, rdr["cid"].ToString()));
+                    Cols.Add(new ColumnVM(rdr["name"].ToString(), type, Convert.ToBoolean(rdr["pk"]), rdr["cid"].ToString()));
                 }
             }
             else
             {
-                Cols.Add(new ColumnVM("", SQLEditor.DataTypes.text));
+                Cols.Add(new ColumnVM("", SQLEditor.DataTypes.text, false));
             }
         }
 
@@ -143,7 +143,13 @@ namespace SQLEditor
                 {
                     cols[i] = Cols[i].GetSQLPartial();
                 }
-                return $"CREATE TABLE {TableName} ({string.Join(", ", cols)});";
+                string sql = $"CREATE TABLE {TableName} ({string.Join(", ", cols)}";
+                var pKColumns = Cols.Where(c => c.PrimaryKey);
+                if (pKColumns.Count() > 0)
+                {
+                    sql = $"{sql}, PRIMARY KEY({string.Join(",", pKColumns.Select(c => c.Name))})";
+                }
+                return $"{sql});";
             }
             throw new InvalidEnumArgumentException();
         }
@@ -168,11 +174,14 @@ namespace SQLEditor
             set { _dataType = value; }
         }
 
-        public ColumnVM(string name, DataTypes dataType, string cid = null)
+        public bool PrimaryKey { get; set; }
+
+        public ColumnVM(string name, DataTypes dataType, bool pk, string cid = null)
         {
             _name = name;
             _dataType = dataType;
             _cID = cid;
+            PrimaryKey = pk;
         }
 
         public string GetSQLPartial()

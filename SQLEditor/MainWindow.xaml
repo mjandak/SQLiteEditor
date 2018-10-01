@@ -46,8 +46,12 @@
                     </HierarchicalDataTemplate>-->
                     <HierarchicalDataTemplate DataType="{x:Type local:TableVM}" ItemsSource="{Binding Columns}">
                         <!--<TreeViewItem Header="{Binding Path=Name}" />-->
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel.ContextMenu>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="select" Command="{Binding GenerateSqlCmd}" CommandParameter="select" />
                                     <MenuItem Header="update" Command="{Binding GenerateSqlCmd}" CommandParameter="update" />
@@ -57,10 +61,10 @@
                                     <Separator />
                                     <MenuItem Header="alter"  Command="{Binding Path=MainWindowVM.AlterTableCmd}" CommandParameter="{Binding Name}" />
                                 </ContextMenu>
-                            </StackPanel.ContextMenu>
-                            <Image Source="if_table_1608863.png" Margin="0,0,10,0" />
-                            <TextBlock Text="{Binding Name}" VerticalAlignment="Bottom" />
-                        </StackPanel>
+                            </Grid.ContextMenu>
+                            <Image Grid.Column="0" Source="table.png" Margin="0,0,10,0" Stretch="None" />
+                            <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" />
+                        </Grid>
                         <!--<TextBlock Text="{Binding Name}" />-->
                         <!--<Label Content="{Binding Name}" />-->
                     </HierarchicalDataTemplate>
@@ -70,7 +74,7 @@
                                 <ContextMenu Visibility="Collapsed"></ContextMenu>
                             </TextBlock.ContextMenu>
                             <TextBlock IsHitTestVisible="False">
-                            <Image Source="icons8-key-12.png" Visibility="{Binding Path=PrimaryKey, Converter={StaticResource BoolVisibilityConverter}}" />
+                            <Image Source="pk.png" Visibility="{Binding Path=PrimaryKey, Converter={StaticResource BoolVisibilityConverter}}" />
                             <Run Text="{Binding Path=Name}"></Run> (<Run Text="{Binding Path=DataType}"></Run>)
                             </TextBlock>
                         </TextBlock>
@@ -87,10 +91,14 @@
                     </TreeViewItem.ContextMenu>
                     <TreeViewItem.HeaderTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="if_database_1608662.png" Margin="0,0,10,0" />
-                                <TextBlock Text="{Binding}" FontWeight="Bold" VerticalAlignment="Bottom" />
-                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="database.png" Margin="0,0,10,0" Stretch="None" />
+                                <TextBlock Grid.Column="1" Text="{Binding}" FontWeight="Bold" VerticalAlignment="Center" />
+                            </Grid>
                         </DataTemplate>
                     </TreeViewItem.HeaderTemplate>
                 </TreeViewItem>

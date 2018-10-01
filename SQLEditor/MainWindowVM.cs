@@ -57,6 +57,10 @@ namespace SQLEditor
             }
         }
 
+        public int SelectionStart { get; set; }
+
+        public int SelectionLength { get; set; }
+
         private DataTable _queryResult;
         public DataTable QueryResult
         {
@@ -122,9 +126,11 @@ namespace SQLEditor
 
         public void Run()
         {
-            SQLiteCommand cmd = new SQLiteCommand(_sql, Globals.DbConnection);
-
-            SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
+            if (_sql == null) return;
+            var sql = _sql.Substring(SelectionStart, SelectionLength);
+            if (string.IsNullOrWhiteSpace(sql)) return;
+            var cmd = new SQLiteCommand(sql, Globals.DbConnection);
+            var da = new SQLiteDataAdapter(cmd);
             //DataTable dt = new DataTable();
             DataSet ds = new DataSet();
             Stopwatch sw = Stopwatch.StartNew();

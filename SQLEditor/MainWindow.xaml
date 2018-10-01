@@ -104,8 +104,9 @@
                 <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
                     <!--<TextBox FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />-->
                     <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" 
-                                                        Text="{Binding Path=Sql}" AcceptsReturn="True" 
-                                                        VerticalScrollBarVisibility="Visible" />
+                                                        Text="{Binding Sql}" AcceptsReturn="True" 
+                                                        VerticalScrollBarVisibility="Visible"
+                                                        SelectionChanged="sqlEditor_SelectionChanged" />
                     <Button Content="Execute" Width="77" HorizontalAlignment="Left" Command="{Binding ExecuteCmd}" />
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Time: " />

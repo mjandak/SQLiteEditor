@@ -103,5 +103,11 @@ namespace SQLEditor
                 e.Handled = true;
             }
         }
+
+        void sqlEditor_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            ViewModel.SelectionStart = sqlEditor.SelectionStart;
+            ViewModel.SelectionLength = sqlEditor.SelectionLength;
+        }
     }
 }

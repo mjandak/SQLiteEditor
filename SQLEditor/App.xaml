@@ -5,6 +5,7 @@
 			 Startup="Application_Startup" ShutdownMode="OnMainWindowClose" Exit="Application_Exit" DispatcherUnhandledException="Application_DispatcherUnhandledException">
 	<Application.Resources>
         <local:NullVisibilityConverter x:Key="NullVisibilityConverter" />
+        <local:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
         <Style x:Key="WindowStyle" TargetType="{x:Type Window}">
 			<Setter Property="FontFamily" Value="Verdana" />
 		</Style>

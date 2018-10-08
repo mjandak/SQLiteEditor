@@ -45,28 +45,24 @@
                         <TextBlock Text="DB" />
                     </HierarchicalDataTemplate>-->
                     <HierarchicalDataTemplate DataType="{x:Type local:TableVM}" ItemsSource="{Binding Columns}">
-                        <!--<TreeViewItem Header="{Binding Path=Name}" />-->
+                        <HierarchicalDataTemplate.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu Visibility="Collapsed"></ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </HierarchicalDataTemplate.ItemContainerStyle>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Grid.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="select" Command="{Binding GenerateSqlCmd}" CommandParameter="select" />
-                                    <MenuItem Header="update" Command="{Binding GenerateSqlCmd}" CommandParameter="update" />
-                                    <MenuItem Header="insert" Command="{Binding GenerateSqlCmd}" CommandParameter="insert" />
-                                    <MenuItem Header="delete" Command="{Binding GenerateSqlCmd}" CommandParameter="delete" />
-                                    <MenuItem Header="drop"   Command="{Binding GenerateSqlCmd}" CommandParameter="drop" />
-                                    <Separator />
-                                    <MenuItem Header="alter"  Command="{Binding Path=MainWindowVM.AlterTableCmd}" CommandParameter="{Binding Name}" />
-                                </ContextMenu>
-                            </Grid.ContextMenu>
-                            <Image Grid.Column="0" Source="table.png" Margin="0,0,10,0" Stretch="None" />
-                            <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" />
+                            <Image Grid.Column="0" Source="table.png" Stretch="None" />
+                            <TextBlock Padding="10,0,0,0" Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" />
                         </Grid>
-                        <!--<TextBlock Text="{Binding Name}" />-->
-                        <!--<Label Content="{Binding Name}" />-->
                     </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type local:ColumnVM}">
                         <TextBlock>
@@ -101,6 +97,23 @@
                             </Grid>
                         </DataTemplate>
                     </TreeViewItem.HeaderTemplate>
+                    <TreeViewItem.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Header="select" Command="{Binding GenerateSqlCmd}" CommandParameter="select" />
+                                        <MenuItem Header="update" Command="{Binding GenerateSqlCmd}" CommandParameter="update" />
+                                        <MenuItem Header="insert" Command="{Binding GenerateSqlCmd}" CommandParameter="insert" />
+                                        <MenuItem Header="delete" Command="{Binding GenerateSqlCmd}" CommandParameter="delete" />
+                                        <MenuItem Header="drop"   Command="{Binding GenerateSqlCmd}" CommandParameter="drop" />
+                                        <Separator />
+                                        <MenuItem Header="alter"  Command="{Binding Path=MainWindowVM.AlterTableCmd}" CommandParameter="{Binding Name}" />
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TreeViewItem.ItemContainerStyle>
                 </TreeViewItem>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
@@ -110,7 +123,6 @@
                     <RowDefinition Height="350" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
-                    <!--<TextBox FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" Text="{Binding Path=Sql}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />-->
                     <syntaxhighlight:SyntaxHighlightBox Name="sqlEditor" FontFamily="Consolas" FontSize="14" MinHeight="300" MaxHeight="300" 
                                                         Text="{Binding Sql}" AcceptsReturn="True" 
                                                         VerticalScrollBarVisibility="Visible"

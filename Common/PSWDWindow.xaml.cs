@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -26,15 +27,27 @@ namespace Common
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             Close();
         }
 
         private void OKBtn_Click(object sender, RoutedEventArgs e)
         {
-            Globals.Pswd = passwordBox.SecurePassword;
-            DialogResult = true;
             Close();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (passwordBox.SecurePassword.Length < 1)
+            {
+                Globals.Pswd = null;
+                DialogResult = false;
+            }
+            else
+            {
+                Globals.Pswd = passwordBox.SecurePassword;
+                DialogResult = true;
+            }
+            base.OnClosing(e);
         }
     }
 }

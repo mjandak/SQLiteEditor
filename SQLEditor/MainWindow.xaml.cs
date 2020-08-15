@@ -42,12 +42,6 @@ namespace SQLEditor
             new NewTableWindow(tableName).ShowDialog();
         }
 
-        void lblTable_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ((TableVM)((FrameworkElement)sender).DataContext).ShowContents();
-
-        }
-
         void btnOpebDb_Click(object sender, RoutedEventArgs e)
         {
             (sender as Button).ContextMenu.IsEnabled = true;
@@ -62,8 +56,15 @@ namespace SQLEditor
             openFileDialog.Multiselect = false;
             if (openFileDialog.ShowDialog() == true)
             {
+                //var pswdDialog = new PSWDWindow();
+                //pswdDialog.ShowDialog();
+                //if (!pswdDialog.ShowDialog().Value)
+                //{
+                //    //Close or cancel button clicked
+                //    return;
+                //}
                 ((MainWindowVM)DataContext).AddDatabase(System.IO.Path.GetFileName(openFileDialog.FileName), openFileDialog.FileName);
-                ((MainWindowVM)DataContext).LoadDatabase(System.IO.Path.GetFileName(openFileDialog.FileName));
+                ((MainWindowVM)DataContext).LoadDatabase(System.IO.Path.GetFileName(openFileDialog.FileName), true);
             }
         }
 
@@ -74,7 +75,7 @@ namespace SQLEditor
             {
                 File.Create(dialog.FileName).Dispose();
                 ((MainWindowVM)DataContext).AddDatabase(System.IO.Path.GetFileName(dialog.FileName), dialog.FileName);
-                ((MainWindowVM)DataContext).LoadDatabase(System.IO.Path.GetFileName(dialog.FileName));
+                ((MainWindowVM)DataContext).LoadDatabase(System.IO.Path.GetFileName(dialog.FileName), true);
             }
         }
 

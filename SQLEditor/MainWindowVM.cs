@@ -114,7 +114,7 @@ namespace SQLEditor
         public MainWindowVM()
         {
             ExecuteCmd = new ExecuteCommand(this);
-            RefreshCmd = new RelayCommand<string>(LoadDatabase);
+            RefreshCmd = new RelayCommand<string>(dbName => LoadDatabase(dbName, false));
             AddTableCmd = new RelayCommand<string>(tableName => AddAlterTable(tableName));
             AlterTableCmd = new RelayCommand<string>(tableName => AddAlterTable(tableName));
 
@@ -131,13 +131,9 @@ namespace SQLEditor
             if (string.IsNullOrWhiteSpace(sql)) return;
             var cmd = new SQLiteCommand(sql, Globals.DbConnection);
             var da = new SQLiteDataAdapter(cmd);
-            //DataTable dt = new DataTable();
             DataSet ds = new DataSet();
             Stopwatch sw = Stopwatch.StartNew();
-
-            //da.FillEx(dt);
-            da.FillEx(ds);
-
+            da.Fill(ds);
             sw.Stop();
             LastSqlDuration = sw.Elapsed.TotalMilliseconds;
             if (ds.Tables.Count > 0) //check if command was select
@@ -146,12 +142,15 @@ namespace SQLEditor
             }
         }
 
-        public void LoadDatabase(string dbName)
+        public void LoadDatabase(string dbName, bool reconnect)
         {
             dbName = dbName ?? throw new ArgumentException(nameof(dbName));
 
-            Globals.DbConnection?.Dispose();
-            Globals.DbConnection = new SQLiteConnection(ConfigurationManager.ConnectionStrings[dbName].ConnectionString);
+            if (reconnect)
+            {
+                Globals.DbConnection?.Dispose();
+                Globals.DbConnection = new SQLiteConnection(ConfigurationManager.ConnectionStrings[dbName].ConnectionString);
+            }
 
             var cmd = new SQLiteCommand(@"
                 SELECT name FROM sqlite_master
@@ -280,20 +279,6 @@ namespace SQLEditor
             GenerateSqlCmd = new GenerateSqlCommand(this);
             Columns = new List<ColumnVM>();
         }
-
-        public void ShowContents()
-        {
-            SQLiteCommand cmd = new SQLiteCommand(String.Format(@"SELECT * FROM {0}", Name), Globals.DbConnection);
-            //cmd.Parameters.Add("tblName", DbType.Object).Value = Name;
-
-            SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            Stopwatch sw = Stopwatch.StartNew();
-            da.FillEx(dt);
-            sw.Stop();
-            MainWindowVM.LastSqlDuration = sw.Elapsed.TotalMilliseconds;
-            MainWindowVM.QueryResult = dt;
-        }
     }
 
     public class DbConnVM
@@ -309,7 +294,9 @@ namespace SQLEditor
         }
         public void LoadDatabase()
         {
-            MainWindowVM.LoadDatabase(Name);
+            //var pswdDialog = new PSWDWindow();
+            //pswdDialog.ShowDialog();
+            MainWindowVM.LoadDatabase(Name, true);
         }
     }
 

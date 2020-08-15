@@ -16,18 +16,6 @@ namespace SQLEditor
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             MainWindow = new MainWindow();
-
-            if (bool.Parse(ConfigurationManager.AppSettings["encrypt"]))
-            {
-                var pswdDialog = new PSWDWindow();
-                if (!pswdDialog.ShowDialog().Value)
-                {
-                    //Close or cancel button clicked
-                    Shutdown();
-                    return;
-                }
-            }
-
             MainWindow.Show();
         }
 

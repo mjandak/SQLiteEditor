@@ -12,60 +12,14 @@ namespace Common
 {
     public static class SQLiteExt
     {
-		/// <summary>
-		/// If db is encrypted sets password on db connection before calling regular fill. See P2.
-		/// </summary>
-		/// <param name="adapter"></param>
-		/// <param name="dataTable"></param>
-		/// <returns></returns>
-        public static int FillEx(this SQLiteDataAdapter adapter, DataTable dataTable)
-        {
-            if (Globals.Pswd != null)
-            {
-                Globals.DbConnection.SetPassword(HandleSecureString(Globals.Pswd));
-            }
-            return adapter.Fill(dataTable);
-        }
-
-		/// <summary>
-		/// If db is encrypted sets password on db connection before calling regular fill. See P2.
-		/// </summary>
-		/// <param name="adapter"></param>
-		/// <param name="dataTable"></param>
-		/// <returns></returns>
-		public static int FillEx(this SQLiteDataAdapter adapter, DataSet dataSet)
-		{
-			if (Globals.Pswd != null)
-			{
-				Globals.DbConnection.SetPassword(HandleSecureString(Globals.Pswd));
-			}
-			return adapter.Fill(dataSet);
-		}
-
-		/// <summary>
-		/// If db is enrypted sets the password on db connection before calling regular update. See P2.
-		/// </summary>
-		/// <param name="adapter"></param>
-		/// <param name="dataTable"></param>
-		/// <returns></returns>
-		public static int UpdateEx(this SQLiteDataAdapter adapter, DataTable dataTable)
-		{
-			if (Globals.Pswd != null)
-			{
-                Globals.DbConnection.SetPassword(HandleSecureString(Globals.Pswd));
-			}
-			return adapter.Update(dataTable);
-		}
-
         public static void OpenEx(this SQLiteConnection connection)
         {
-            if (connection.State != ConnectionState.Closed)
-            {
-                return;
-            }
+            if (connection.State != ConnectionState.Closed) return;
+            new PSWDWindow().ShowDialog();
             if (Globals.Pswd != null)
             {
                 connection.SetPassword(HandleSecureString(Globals.Pswd));
+                Globals.Pswd.Dispose();
             }
             connection.Open();
         }
